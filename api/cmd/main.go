@@ -2,14 +2,14 @@ package main
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/jbsbuilder/golang-vpc-api-project/api/database"
 )
 
 func main() {
+	database.ConnectDb()
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	setupRoutes(app)
 
 	app.Listen(":3000")
 }
