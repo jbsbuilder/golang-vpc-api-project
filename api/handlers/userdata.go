@@ -9,7 +9,7 @@ import (
 // revamp func to show only requested user data
 func ListUserData(c *fiber.Ctx) error {
 	userdata := []models.UserData{}
-	database.DB.dB.Find(&userdata)
+	database.DB.Db.Find(&userdata)
 
 	return c.Status(200).JSON(userdata)
 }
@@ -22,7 +22,7 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	database.Db.Db.Create(&userdata)
+	database.DB.Db.Create(&userdata)
 
 	return c.Status(200).JSON(userdata)
 }
