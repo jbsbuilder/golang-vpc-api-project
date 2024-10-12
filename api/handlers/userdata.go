@@ -15,9 +15,7 @@ func ListUserData(c *fiber.Ctx) error {
 	}
 
 	userdata := new(models.UserData)
-	database.DB.Db.Model(userdata).Where("email = ?", email).Find(userdata)
-
-	if userdata.ID == 0 {
+	if err := database.DB.Db.Model(userdata).Where("email = ?", email).First(userdata).Error; err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"message": "User not found",
 		})
@@ -34,7 +32,11 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	database.DB.Db.Create(&userdata)
+	if err := database.DB.Db.Create(&userdata).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
 
 	return c.Status(200).JSON(userdata)
 }
@@ -74,12 +76,15 @@ func UpdateUser(c *fiber.Ctx) error {
 		existingUser.Email = userdata.Email
 	}
 
-	database.DB.Db.Save(&existingUser)
+	if err := database.DB.Db.Save(&existingUser).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": err.Error(),
+		})
+	}
 
 	return c.Status(200).JSON(existingUser)
 }
 
-// Add delete user data
 func DeleteUser(c *fiber.Ctx) error {
 	userdata := new(models.UserData)
 	if err := c.BodyParser(&userdata); err != nil {
