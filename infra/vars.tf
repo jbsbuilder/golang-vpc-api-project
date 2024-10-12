@@ -1,5 +1,6 @@
-variable "AWS_REGION" {
-  default = ""
+variable "region" {
+  type = string
+  default = "us-west-1"
 }
 
 variable "PATH_TO_PRIVATE_KEY" {
@@ -20,4 +21,9 @@ variable "db-password" {
 
 variable "AS_AMI" {
   default = ""
+}
+
+variable "acl" {
+  type = string
+  default = "private"
 }
