@@ -15,7 +15,13 @@ variable "AMIS" {
   default = ""
 }
 
-variable "db-password" {
+variable "db_username" {
+  type = string
+  default = ""
+}
+
+variable "db_password" {
+  type = string
   default = ""
 }
 

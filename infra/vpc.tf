@@ -1,6 +1,6 @@
 # Internet VPC GET a GD Naming Convention
 resource "aws_vpc" "main" {
-  cidr_block       = "47.0.0.0/16"
+  cidr_block       = "10.10.9.0/16"
   instance_tenancy = "default"
 }
 

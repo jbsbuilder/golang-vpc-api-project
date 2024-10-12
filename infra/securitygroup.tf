@@ -47,26 +47,23 @@ resource "aws_security_group" "elb-securitygroup" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  tags = {
-    Name = "Jake_replace_tags"
-  }
 }
 
 # database security group this will be postgres
-resource "aws_security_group" "allow-mysql" {
+resource "aws_security_group" "allow-postgres" {
   vpc_id      = aws_vpc.main.id
-  name        = "allow-mysql"
-  description = "allow-mariadb"
+  name        = "allow-postgres"
+  description = "allow-postgres"
   ingress {
-    from_port       = 3306
-    to_port         = 3306
+    from_port       = 5432
+    to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.myinstance.id]
   }
 
   ingress {
-    from_port       = 3306
-    to_port         = 3306
+    from_port       = 5432
+    to_port         = 5432
     protocol        = "tcp"
     security_groups = [aws_security_group.instance.id]
   }
@@ -77,9 +74,6 @@ resource "aws_security_group" "allow-mysql" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
     #self        = true
-  }
-  tags = {
-    Name = "sridhar-sg-allow-mysql"
   }
 }
 
@@ -107,9 +101,5 @@ resource "aws_security_group" "instance" {
     to_port     = 80
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "Jake_replace_these"
   }
 }
