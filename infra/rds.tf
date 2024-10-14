@@ -11,7 +11,6 @@ resource "aws_db_instance" "mysql" {
   engine_version         = "14"
   instance_class         = "db.t2.micro"
   identifier             = "postgres"
-  name                   = "mydb"
   username               = var.db_username
   password               = var.db_password
   port                   = "5432"

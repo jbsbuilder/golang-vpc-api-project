@@ -7,10 +7,4 @@ resource "aws_route53_record" "www" {
   zone_id = data.aws_route53_zone.root_domain.zone_id
   name = "coffee.cloudsmithlabs.com"
   type = "A"
-
-  alias {
-    name = var.cloudfront_id
-    zone_id = var.cloudfront_zone
-    evaluate_target_health = false
-  }
 }
