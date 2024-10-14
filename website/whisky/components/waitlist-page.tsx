@@ -49,22 +49,22 @@ export function WaitlistPageComponent() {
 
   const handleSubmit = async (e: React.FormEvent, action: string) => {
     e.preventDefault()
-    let url = "'/api/waitlist'"
-    let method = "'POST'"
+    let url = '/api/create'
+    let method = 'POST'
     let body = JSON.stringify(formData)
 
     switch (action) {
-      case "'check'":
-        url += "'/check'"
-        method = "'GET'"
+      case 'check':
+        url += 'api/check'
+        method = 'GET'
         break
-      case "'update'":
-        url += "'/update'"
+      case 'update':
+        url += 'api/update'
         method = "'PUT'"
         break
-      case "'delete'":
-        url += "'/delete'"
-        method = "'DELETE'"
+      case 'delete':
+        url += 'api/delete'
+        method = 'DELETE'
         body = JSON.stringify({ email: formData.email })
         break
     }
@@ -72,17 +72,17 @@ export function WaitlistPageComponent() {
     try {
       const response = await fetch(url, {
         method,
-        headers: { "'Content-Type'": "'application/json'" },
+        headers: { 'Content-Type': 'application/json' },
         body: method !== "'GET'" ? body : undefined
       })
 
-      if (!response.ok) throw new Error("'Network response was not ok'")
+      if (!response.ok) throw new Error('Network response was not ok')
 
       const data = await response.json()
       setMessage(data.message)
     } catch (error) {
-      console.error("'Error:'", error)
-      setMessage("'An error occurred. Please try again.'")
+      console.error('Error:', error)
+      setMessage('An error occurred. Please try again.')
     }
   }
 
