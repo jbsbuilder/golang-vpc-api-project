@@ -26,7 +26,7 @@ export function WaitlistPageComponent() {
       if (!parallaxRef.current) return
 
       const parallaxHeight = parallaxRef.current.offsetHeight
-      const totalScrollHeight = heroHeight + parallaxHeight
+      //const totalScrollHeight = heroHeight + parallaxHeight
 
       if (scrollY > heroHeight) {
         const relativeScroll = (scrollY - heroHeight) % parallaxHeight
@@ -39,8 +39,8 @@ export function WaitlistPageComponent() {
       }
     }
 
-    window.addEventListener("'scroll'", handleScroll)
-    return () => window.removeEventListener("'scroll'", handleScroll)
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +49,7 @@ export function WaitlistPageComponent() {
 
   const handleSubmit = async (e: React.FormEvent, action: string) => {
     e.preventDefault()
-    let url = '/api/create'
+    let url = 'api/create'
     let method = 'POST'
     let body = JSON.stringify(formData)
 
@@ -132,13 +132,13 @@ export function WaitlistPageComponent() {
               In the misty highlands of Scotland, where whisky traditions run as deep as the lochs, our journey began. It was here, amidst the rolling hills and ancient distilleries, that we first dreamed of marrying the bold character of Scotch whisky with the rich complexity of coffee.
             </p>
             <p>
-              Our search for the perfect bean led us to the sun-drenched slopes of Colombia's Andes Mountains. Here, we discovered a rare, high-altitude Arabica, cultivated by a cooperative of small-scale farmers dedicated to sustainable practices. These beans, nurtured in volcanic soil and kissed by mountain mists, promised a flavor profile as nuanced as the finest single malt.
+              Our search for the perfect bean led us to the sun-drenched slopes of Colombia Andes Mountains. Here, we discovered a rare, high-altitude Arabica, cultivated by a cooperative of small-scale farmers dedicated to sustainable practices. These beans, nurtured in volcanic soil and kissed by mountain mists, promised a flavor profile as nuanced as the finest single malt.
             </p>
             <p>
               But the true magic happened when these exceptional beans met the char-kissed interiors of retired Scotch whisky barrels. In the cool, damp cellars of an old Edinburgh storehouse, we carefully aged our coffee, allowing it to absorb the lingering essences of peated malt, oak, and time itself.
             </p>
             <p>
-              The result? A coffee that tells a story with every sip - a tale of Scottish craft, Colombian passion, and a shared love for flavors that transcend borders. It's more than just coffee; it's a journey from highland to highland, a testament to the artistry of patience, and a celebration of cultural fusion in every aromatic cup.
+              The result? A coffee that tells a story with every sip - a tale of Scottish craft, Colombian passion, and a shared love for flavors that transcend borders. Its more than just coffee; its a journey from highland to highland, a testament to the artistry of patience, and a celebration of cultural fusion in every aromatic cup.
             </p>
           </div>
         </div>
