@@ -8,8 +8,8 @@ import (
 func main() {
 	database.ConnectDb()
 	app := fiber.New()
-
+	app.Static("/", "./public")
 	setupRoutes(app)
 
-	app.Listen(":3001")
+	app.Listen(":3000")
 }

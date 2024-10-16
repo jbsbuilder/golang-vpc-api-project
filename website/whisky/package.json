@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "export": "next build && next export --outdir ../../frontend-build",
+    "export": "next build && next export ../../api/cmd/public",
     "start": "next start",
     "lint": "next lint"
   },

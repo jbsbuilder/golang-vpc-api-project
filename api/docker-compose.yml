@@ -1,5 +1,5 @@
 ---
-version: '3.8'
+version: '4.0'
 
 services:
   web:
@@ -7,7 +7,7 @@ services:
     env_file:
       - .env
     ports:
-      - "3001:3001"
+      - "3000:3000"
     volumes:
       - .:/usr/src/app
     command: sh -c "cd /usr/src/app/cmd && air ./cmd/main.go -b 0.0.0.0"
