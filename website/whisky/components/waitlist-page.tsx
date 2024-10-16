@@ -49,20 +49,20 @@ export function WaitlistPageComponent() {
 
   const handleSubmit = async (e: React.FormEvent, action: string) => {
     e.preventDefault()
-    let url = '/create'
+    let url = ''
     let method = 'POST'
     let body = JSON.stringify(formData)
 
     switch (action) {
-      case 'check':
+      case "'check'":
         url += '/check'
         method = 'GET'
         break
-      case 'update':
+      case "'update'":
         url += '/update'
-        method = "'PUT'"
+        method = 'PUT'
         break
-      case 'delete':
+      case "'delete'":
         url += '/delete'
         method = 'DELETE'
         body = JSON.stringify({ email: formData.email })
