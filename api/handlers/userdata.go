@@ -7,7 +7,7 @@ import (
 )
 
 func ListUserData(c *fiber.Ctx) error {
-	email := c.Query("email")
+	email := c.Get("email")
 	if email == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Email is required",

@@ -51,12 +51,16 @@ export function WaitlistPageComponent() {
     e.preventDefault()
     let url = ''
     let method = 'POST'
-    let body = JSON.stringify(formData)
+    let body: any = JSON.stringify(formData)
 
     switch (action) {
       case "'check'":
         url += '/check'
         method = 'GET'
+        const headers = new Headers()
+        headers.append('email', formData.email)
+        body = undefined
+        console.log(headers, body)
         break
       case "'update'":
         url += '/update'
