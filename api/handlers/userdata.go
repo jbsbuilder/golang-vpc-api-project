@@ -7,7 +7,8 @@ import (
 )
 
 func ListUserData(c *fiber.Ctx) error {
-	email := c.Get("email")
+	// Get the email from query parameters
+	email := c.Query("email")
 	if email == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Email is required",
@@ -42,8 +43,14 @@ func CreateUser(c *fiber.Ctx) error {
 }
 
 func UpdateUser(c *fiber.Ctx) error {
-	email := c.Query("email")
-	if email == "" {
+	var userData models.UserData
+	if err := c.BodyParser(&userData); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"message": "invalid request",
+		})
+	}
+
+	if userData.Email == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"message": "Email is required",
 		})
@@ -58,7 +65,7 @@ func UpdateUser(c *fiber.Ctx) error {
 
 	// Find the user by the current email
 	var existingUser models.UserData
-	result := database.DB.Db.Model(&models.UserData{}).Where("email = ?", email).First(&existingUser)
+	result := database.DB.Db.Model(&models.UserData{}).Where("email = ?", userData.Email).First(&existingUser)
 	if result.RowsAffected == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"message": "User not found",
