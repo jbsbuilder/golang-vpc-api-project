@@ -9,10 +9,11 @@ import Link from "next/link"
 
 export function WaitlistPageComponent() {
   const [parallaxImages, setParallaxImages] = useState({ barrel: 0, coffee: 0 })
-  const [formData, setFormData] = useState({ email: "''", firstName: "''", lastName: "''" })
-  const [message, setMessage] = useState("''")
+  const [formData, setFormData] = useState({ email: '', firstName: '', lastName: '' })
+  const [message, setMessage] = useState('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isNavVisible, setIsNavVisible] = useState(false)
+  const [showMessageBox, setShowMessageBox] = useState(false)
   const parallaxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -54,16 +55,16 @@ export function WaitlistPageComponent() {
     let body: any = JSON.stringify(formData)
 
     switch (action) {
-      case "'check'":
+      case 'check':
         url += `/check?email=${encodeURIComponent(formData.email)}`
         method = 'GET'
         body = undefined
         break
-      case "'update'":
+      case 'update':
         url += '/update'
         method = 'PUT'
         break
-      case "'delete'":
+      case 'delete':
         url += '/delete'
         method = 'DELETE'
         body = JSON.stringify({ email: formData.email })
@@ -74,13 +75,17 @@ export function WaitlistPageComponent() {
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: method !== "'GET'" ? body : undefined
+        body: method !== 'GET' ? body : undefined
       })
 
       if (!response.ok) throw new Error('Network response was not ok')
 
       const data = await response.json()
       setMessage(data.message)
+
+      if (action === 'check' && response.status === 200) {
+        setShowMessageBox(true)
+      }
     } catch (error) {
       console.error('Error:', error)
       setMessage('An error occurred. Please try again.')
@@ -190,7 +195,7 @@ export function WaitlistPageComponent() {
         />
         <div className="relative z-20 container mx-auto px-4 py-16">
           <div className="max-w-md mx-auto bg-white/80 backdrop-blur-sm rounded-lg shadow-lg p-6">
-            <form onSubmit={(e) => handleSubmit(e, "'signup'")} className="space-y-4">
+            <form onSubmit={(e) => handleSubmit(e, 'signup')} className="space-y-4">
               <div>
                 <Label htmlFor="email">Email</Label>
                 <Input type="email" id="email" name="email" required onChange={handleInputChange} />
@@ -206,14 +211,20 @@ export function WaitlistPageComponent() {
               <Button type="submit" className="w-full">Sign Up</Button>
             </form>
             <div className="mt-4 space-y-2">
-              <Button onClick={(e) => handleSubmit(e, "'check'")} className="w-full">Check Status</Button>
-              <Button onClick={(e) => handleSubmit(e, "'update'")} className="w-full">Update Info</Button>
-              <Button onClick={(e) => handleSubmit(e, "'delete'")} variant="destructive" className="w-full">Delete Info</Button>
+              <Button onClick={(e) => handleSubmit(e, 'check')} className="w-full">Check Status</Button>
+              <Button onClick={(e) => handleSubmit(e, 'update')} className="w-full">Update Info</Button>
+              <Button onClick={(e) => handleSubmit(e, 'delete')} variant="destructive" className="w-full">Delete Info</Button>
             </div>
             {message && (
               <p className={`mt-4 text-center ${message.includes("'error'") ? "'text-red-600'" : "'text-green-600'"}`}>
                 {message}
               </p>
+            )}
+            {showMessageBox && (
+              <div className="message-box">
+                <p>You are on the list!</p>
+                <button onClick={() => setShowMessageBox(false)}>Close</button>
+              </div>
             )}
           </div>
         </div>
