@@ -5,7 +5,7 @@ resource "aws_db_subnet_group" "postgres-subnet" {
 }
 
 #update me to Postgres
-resource "aws_db_instance" "mysql" {
+resource "aws_db_instance" "postgres" {
   allocated_storage      = 20
   engine                 = "postgres"
   engine_version         = "14"

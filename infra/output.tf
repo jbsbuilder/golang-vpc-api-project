@@ -7,7 +7,7 @@ output "instance" {
 }
 
 output "rds" {
-  value = aws_db_instance.mysql.endpoint
+  value = aws_db_instance.postgres.endpoint
 }
 
 output "domain_name" {
