@@ -1,92 +1,64 @@
-# Internet VPC GET a GD Naming Convention
-resource "aws_vpc" "main" {
-  cidr_block       = "10.10.9.0/16"
-  instance_tenancy = "default"
+data "aws_availability_zones" "available_zones" {
+  state = "available"
 }
 
-# Subnets
-resource "aws_subnet" "main-public-1" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.10.11.0/24"
-  map_public_ip_on_launch = "true"
-  availability_zone       = "us-west-1a"
+resource "aws_vpc" "ecs_vpc" {
+  cidr_block = "10.128.0.0/16"
 }
 
-resource "aws_subnet" "main-public-2" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.10.12.0/24"
-  map_public_ip_on_launch = "true"
-  availability_zone       = "us-west-1b"
+resource "aws_subnet" "public" {
+  count             = 2
+  cidr_block        = cidrsubnet(aws_vpc.ecs_vpc.cidr_block, 8, 2 + count.index)
+  vpc_id            = aws_vpc.ecs_vpc.id
+  availability_zone = data.aws_availability_zones.available_zones.names[count.index]
+
+  # instances launched in subnet get assigned a public IP
+  map_public_ip_on_launch = true
 }
 
-
-resource "aws_subnet" "main-private-1" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.10.13.0/24"
-  map_public_ip_on_launch = "false"
-  availability_zone       = "us-west-1a"
+resource "aws_subnet" "private" {
+  count             = 2
+  cidr_block        = cidrsubnet(aws_vpc.ecs_vpc.cidr_block, 8, count.index)
+  vpc_id            = aws_vpc.ecs_vpc.id
+  availability_zone = data.aws_availability_zones.available_zones.names[count.index]
 }
 
-resource "aws_subnet" "main-private-2" {
-  vpc_id                  = aws_vpc.main.id
-  cidr_block              = "10.10.14.0/24"
-  map_public_ip_on_launch = "false"
-  availability_zone       = "us-west-1b"
+resource "aws_internet_gateway" "gw" {
+  depends_on = [aws_vpc.ecs_vpc]
+
+  vpc_id = aws_vpc.ecs_vpc.id
 }
 
-
-# Internet GW
-resource "aws_internet_gateway" "main-gw" {
-  vpc_id = aws_vpc.main.id
+resource "aws_route" "internet_access" {
+  route_table_id         = aws_vpc.ecs_vpc.main_route_table_id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.gw.id
 }
 
-# route tables
-resource "aws_route_table" "main-public" {
-  vpc_id = aws_vpc.main.id
+resource "aws_eip" "gateway" {
+  count      = 2
+  depends_on = [aws_internet_gateway.gw]
+  vpc        = true
+}
+
+resource "aws_nat_gateway" "ecs_nat" {
+  count         = 2
+  allocation_id = element(aws_eip.gateway.*.id, count.index)
+  subnet_id     = element(aws_subnet.public.*.id, count.index)
+}
+
+resource "aws_route_table" "private" {
+  count  = 2
+  vpc_id = aws_vpc.ecs_vpc.id
+
   route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.main-gw.id
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = element(aws_nat_gateway.ecs_nat.*.id, count.index)
   }
 }
 
-resource "aws_route_table" "main-private" {
-  vpc_id = aws_vpc.main.id
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat-gw.id
-   }
-}
-
-
-# route associations public
-resource "aws_route_table_association" "main-public-1" {
-  subnet_id      = aws_subnet.main-public-1.id
-  route_table_id = aws_route_table.main-public.id
-}
-
-resource "aws_route_table_association" "main-public-2" {
-  subnet_id      = aws_subnet.main-public-2.id
-  route_table_id = aws_route_table.main-public.id
-}
-
-# route associations private
-resource "aws_route_table_association" "main-private-1" {
-  subnet_id      = aws_subnet.main-private-1.id
-  route_table_id = aws_route_table.main-private.id
-}
-
-resource "aws_route_table_association" "main-private-2" {
-  subnet_id      = aws_subnet.main-private-2.id
-  route_table_id = aws_route_table.main-private.id
-}
-
-
-resource "aws_eip" "nat" {
-  vpc = true
-}
-
-resource "aws_nat_gateway" "nat-gw" {
-  allocation_id = aws_eip.nat.id
-  subnet_id     = aws_subnet.main-public-1.id
-  depends_on    = [aws_internet_gateway.main-gw]
+resource "aws_route_table_association" "private" {
+  count          = 2
+  subnet_id      = element(aws_subnet.private.*.id, count.index)
+  route_table_id = element(aws_route_table.private.*.id, count.index)
 }
