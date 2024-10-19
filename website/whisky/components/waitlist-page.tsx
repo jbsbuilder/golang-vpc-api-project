@@ -1,19 +1,18 @@
-"use client"
+'use client'
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Coffee, Wine, Clock, Star, Menu } from "lucide-react"
-import Link from "next/link"
+import { Coffee, Wine, Clock, Star, Menu } from 'lucide-react'
+import Link from 'next/link'
 
-export function WaitlistPageComponent() {
+export default function WaitlistPage() {
   const [parallaxImages, setParallaxImages] = useState({ barrel: 0, coffee: 0 })
   const [formData, setFormData] = useState({ email: '', firstName: '', lastName: '' })
   const [message, setMessage] = useState('')
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isNavVisible, setIsNavVisible] = useState(false)
-  const [showMessageBox, setShowMessageBox] = useState(false)
   const parallaxRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -27,7 +26,7 @@ export function WaitlistPageComponent() {
       if (!parallaxRef.current) return
 
       const parallaxHeight = parallaxRef.current.offsetHeight
-      //const totalScrollHeight = heroHeight + parallaxHeight
+      const totalScrollHeight = heroHeight + parallaxHeight
 
       if (scrollY > heroHeight) {
         const relativeScroll = (scrollY - heroHeight) % parallaxHeight
@@ -40,8 +39,8 @@ export function WaitlistPageComponent() {
       }
     }
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,11 +79,24 @@ export function WaitlistPageComponent() {
 
       if (!response.ok) throw new Error('Network response was not ok')
 
-      const data = await response.json()
-      setMessage(data.message)
-
-      if (action === 'check' && response.status === 200) {
-        setShowMessageBox(true)
+      if (response.status === 200) {
+        switch (action) {
+          case 'signup':
+            setMessage('You are signed up!')
+            break
+          case 'check':
+            setMessage('You are on the list!')
+            break
+          case 'update':
+            setMessage('Info has been updated!')
+            break
+          case 'delete':
+            setMessage('Your information has been removed!')
+            break
+        }
+      } else {
+        const data = await response.json()
+        setMessage(data.message)
       }
     } catch (error) {
       console.error('Error:', error)
@@ -94,7 +106,7 @@ export function WaitlistPageComponent() {
 
   return (
     <div className="min-h-screen bg-amber-50 relative">
-      <nav className={`fixed top-0 left-0 right-0 bg-amber-900 text-white transition-all duration-300 z-50 ${isNavVisible ? "'opacity-100'" : "'opacity-0 -translate-y-full'"}`}>
+      <nav className={`fixed top-0 left-0 right-0 bg-amber-900 text-white transition-all duration-300 z-50 ${isNavVisible ? 'opacity-100' : 'opacity-0 -translate-y-full'}`}>
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center py-4">
             <Link href="/" className="text-xl font-bold">Whisky Coffee Co.</Link>
@@ -122,7 +134,7 @@ export function WaitlistPageComponent() {
           <h1 className="text-6xl font-bold mb-4 shadow-text">Whisky Barrel-Aged Coffee</h1>
           <p className="text-2xl mb-8 shadow-text">Join our exclusive waitlist</p>
           <Button 
-            onClick={() => window.scrollTo({top: window.innerHeight, behavior: "smooth"})}
+            onClick={() => window.scrollTo({top: window.innerHeight, behavior: 'smooth'})}
             className="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded"
           >
             Learn More
@@ -138,13 +150,13 @@ export function WaitlistPageComponent() {
               In the misty highlands of Scotland, where whisky traditions run as deep as the lochs, our journey began. It was here, amidst the rolling hills and ancient distilleries, that we first dreamed of marrying the bold character of Scotch whisky with the rich complexity of coffee.
             </p>
             <p>
-              Our search for the perfect bean led us to the sun-drenched slopes of Colombia Andes Mountains. Here, we discovered a rare, high-altitude Arabica, cultivated by a cooperative of small-scale farmers dedicated to sustainable practices. These beans, nurtured in volcanic soil and kissed by mountain mists, promised a flavor profile as nuanced as the finest single malt.
+              Our search for the perfect bean led us to the sun-drenched slopes of Colombia's Andes Mountains. Here, we discovered a rare, high-altitude Arabica, cultivated by a cooperative of small-scale farmers dedicated to sustainable practices. These beans, nurtured in volcanic soil and kissed by mountain mists, promised a flavor profile as nuanced as the finest single malt.
             </p>
             <p>
               But the true magic happened when these exceptional beans met the char-kissed interiors of retired Scotch whisky barrels. In the cool, damp cellars of an old Edinburgh storehouse, we carefully aged our coffee, allowing it to absorb the lingering essences of peated malt, oak, and time itself.
             </p>
             <p>
-              The result? A coffee that tells a story with every sip - a tale of Scottish craft, Colombian passion, and a shared love for flavors that transcend borders. Its more than just coffee; its a journey from highland to highland, a testament to the artistry of patience, and a celebration of cultural fusion in every aromatic cup.
+              The result? A coffee that tells a story with every sip - a tale of Scottish craft, Colombian passion, and a shared love for flavors that transcend borders. It's more than just coffee; it's a journey from highland to highland, a testament to the artistry of patience, and a celebration of cultural fusion in every aromatic cup.
             </p>
           </div>
         </div>
@@ -216,15 +228,9 @@ export function WaitlistPageComponent() {
               <Button onClick={(e) => handleSubmit(e, 'delete')} variant="destructive" className="w-full">Delete Info</Button>
             </div>
             {message && (
-              <p className={`mt-4 text-center ${message.includes("'error'") ? "'text-red-600'" : "'text-green-600'"}`}>
+              <p className={`mt-4 text-center ${message.includes('error') ? 'text-red-600' : 'text-black-600'}`}>
                 {message}
               </p>
-            )}
-            {showMessageBox && (
-              <div className="message-box">
-                <p>You are on the list!</p>
-                <button onClick={() => setShowMessageBox(false)}>Close</button>
-              </div>
             )}
           </div>
         </div>

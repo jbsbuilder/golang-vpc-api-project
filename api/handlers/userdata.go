@@ -7,7 +7,6 @@ import (
 )
 
 func ListUserData(c *fiber.Ctx) error {
-	// Get the email from query parameters
 	email := c.Query("email")
 	if email == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
