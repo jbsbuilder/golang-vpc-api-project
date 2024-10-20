@@ -5,10 +5,10 @@ services:
     env_file:
       - .env
     ports:
-      - "3000:3000"
+      - "3001:3001"
     volumes:
-      - .:/usr/src/app
-    command: sh -c "cd /usr/src/app/cmd && air ./cmd/main.go -b 0.0.0.0"
+      - .:/app
+    command: sh -c "cd /app/cmd && air ./cmd/main.go -b 0.0.0.0"
   db:
     image: postgres:alpine
     environment:
