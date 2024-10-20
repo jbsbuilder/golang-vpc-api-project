@@ -1,24 +1,41 @@
 resource "aws_s3_bucket" "root_bucket" {
   bucket = var.domain_name
-  acl    = "public-read"
-  policy = <<POLICY
-{
-  "Version":"2012-10-17",
-  "Statement":[
-    {
-      "Sid":"AddPerm",
-      "Effect":"Allow",
-      "Principal": "*",
-      "Action":["s3:GetObject"],
-      "Resource":["arn:aws:s3:::${var.domain_name}/*"]
-    }
-  ]
 }
-POLICY
 
-  website {
-    index_document = "index.html"
-    error_document = "404.html"
+resource "aws_s3_bucket_public_access_block" "root_bucket_public_access" {
+  bucket = aws_s3_bucket.root_bucket.id
+
+  block_public_acls   = true
+  block_public_policy = true
+  ignore_public_acls  = true
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "root_bucket_policy" {
+  bucket = aws_s3_bucket.root_bucket.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid = "AddPerm"
+        Effect = "Allow"
+        Principal = "*"
+        Action = ["s3:GetObject"]
+        Resource = ["arn:aws:s3:::${var.domain_name}/*"]
+      }
+    ]
+  })
+}
+
+resource "aws_s3_bucket_website_configuration" "root_bucket_website" {
+  bucket = aws_s3_bucket.root_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "404.html"
   }
 }
 
