@@ -1,14 +1,17 @@
----
 services:
   web:
-    build: .
+    build: ./website/whisky
+
+  api:
+    build: ./api
     env_file:
       - .env
     ports:
       - "3001:3001"
     volumes:
-      - .:/app
+      - ./api:/app
     command: sh -c "cd /app/cmd && air ./cmd/main.go -b 0.0.0.0"
+
   db:
     image: postgres:alpine
     environment:
@@ -17,8 +20,3 @@ services:
       - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"
-    volumes:
-      - postgres-db:/var/lib/postgresql/data
-
-volumes:
-  postgres-db:
