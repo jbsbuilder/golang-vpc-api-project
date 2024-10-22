@@ -1,5 +1,5 @@
 variable "region" {
-  default     = "us-west-2"
+  default     = "us-west-1"
   description = "AWS region"
 }
 
@@ -14,7 +14,7 @@ variable "environment" {
 
 variable "availability_zones" {
   description = "a comma-separated list of availability zones, defaults to all AZ of the region, if set to something other than the defaults, both private_subnets and public_subnets have to be defined as well"
-  default     = ["us-west-2a", "us-west-2b", "us-west-2c"]
+  default     = ["us-west-1a", "us-west-1b", "us-west-1c"]
 }
 
 variable "cidr" {
@@ -39,7 +39,7 @@ variable "service_desired_count" {
 
 variable "container_port" {
   description = "The port where the Docker is exposed"
-  default     = 8080
+  default     = 3001
 }
 
 variable "container_cpu" {
