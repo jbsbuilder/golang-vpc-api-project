@@ -1,13 +1,13 @@
 provider "aws" {
-  region                   = "us-west-1"
+  region                   = var.region
   shared_credentials_files = ["~/.aws/credentials"]
 }
 
 terraform {
   backend "s3" {
-    bucket = "jaketerraformstate3.0"
+    bucket = var.backend_bucket
     key    = "s3/terraform.tfstate"
-    region = "us-west-1"
+    region = "var.region"
 
     encrypt        = true
   }
