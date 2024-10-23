@@ -78,7 +78,7 @@ variable "app_bucket" {
 
 variable "admin_front_domain" {
   description = "Bucket name used to host admin frontend"
-  default     = "bucket-name.com"
+  default     = "coffee.cloudsmithlabs.com"
 }
 
 variable "admin_front_bucket" {
@@ -112,4 +112,8 @@ variable "secrets_values" {
       name      = "VARIABLE_NAME"
     }
   ]
+}
+
+variable "bucket_name" {
+type = string
 }

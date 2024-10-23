@@ -12,6 +12,6 @@ output "endpoint" {
 
 output "database-name" {
   description = "RDS instance hostname"
-  value       = aws_db_instance.main.name
+  value       = aws_db_instance.main.db_name
   sensitive   = true
 }

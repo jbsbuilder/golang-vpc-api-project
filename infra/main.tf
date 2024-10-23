@@ -36,13 +36,35 @@ module "alb" {
 }
 
 
-module "s3-admin-front" {
-  source              = "./modules/s3"
-  zone_id             = var.zone_id
-  bucket_name         = var.admin_front_bucket
-  domain_name         = var.admin_front_domain
-  api_endpoint        = module.alb.alb_dns_name
-  tsl_certificate_arn = var.tsl_certificatecloudfront
+module "static_bucket" {
+  source = "./modules/s3_static"
+
+  bucket_name = "cloudsmithlabs.com"
+  acl = "public-read"
+}
+
+module "cloudFront" {
+  source = "./modules/cloudFront"
+
+  domain_name = module.static_bucket.domain_name
+  acm_certificate_arn = module.acm.acm_certificate_arn
+  bucket_id = module.static_bucket.bucket_id
+}
+
+module "cloudFront" {
+  source = "./modules/cloudFront"
+
+  domain_name = module.static_bucket.domain_name
+  acm_certificate_arn = module.acm.acm_certificate_arn
+  bucket_id = module.static_bucket.bucket_id
+}
+
+module "acm" {
+  source = "./modules/acm"
+
+  providers = {
+    aws.acm = aws.acm
+   }
 }
 
 module "postgres-rds" {
@@ -79,11 +101,11 @@ module "ecs" {
     },
     {
       name  = "DATABASE_URL",
-      value = module.mySQL-rds.hostname
+      value = module.postgres-rds.hostname
     },
     {
       name  = "DATABASE_NAME",
-      value = module.mySQL-rds.database-name
+      value = module.postgres-rds.database-name
     }
   ]
   container_secrets      = var.secrets_values
