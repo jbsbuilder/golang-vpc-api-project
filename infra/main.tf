@@ -45,7 +45,7 @@ module "s3-admin-front" {
   tsl_certificate_arn = var.tsl_certificatecloudfront
 }
 
-module "mySQL-rds" {
+module "postgres-rds" {
   source              = "./modules/rds"
   name                = var.name
   environment         = var.environment
@@ -90,6 +90,6 @@ module "ecs" {
   aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
   container_secrets_arns = concat(var.secrets_arn, [var.database_secret_arn])
   depends_on = [
-    module.mySQL-rds
+    module.postgres-rds
   ]
 }

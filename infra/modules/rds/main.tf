@@ -23,7 +23,7 @@ resource "aws_db_subnet_group" "rds_subnet_group" {
 
 resource "aws_db_parameter_group" "main" {
   name   = "main"
-  family = "mysql8.0"
+  family = "postgres15.0"
 
   parameter {
     name  = "character_set_server"
@@ -40,19 +40,18 @@ resource "aws_db_parameter_group" "main" {
 resource "aws_db_instance" "main" {
   identifier             = "${var.name}-database-${var.environment}"
   allocated_storage      = 10
-  engine                 = "mysql"
-  engine_version         = "8.0.23"
+  engine                 = "postgres"
+  engine_version         = "15.2"
   instance_class         = "db.t3.micro"
-  db_name                   = "${var.name}db"
+  db_name                = "${var.name}db"
   username               = local.db_creds.username
   password               = local.db_creds.password
   parameter_group_name   = aws_db_parameter_group.main.name
   db_subnet_group_name   = aws_db_subnet_group.rds_subnet_group.name
-  port                   = 3306
+  port                   = 5432
   publicly_accessible    = false
   skip_final_snapshot    = true
   vpc_security_group_ids = var.rds_security_groups
-
 
   tags = {
     Name        = "${var.name}-database-${var.environment}"
