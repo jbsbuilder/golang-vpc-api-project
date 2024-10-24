@@ -14,7 +14,7 @@ module "alb" {
   zone_id             = var.zone_id
   environment         = var.environment
   alb_security_groups = [module.security_groups.alb]
-  alb_tls_cert_arn    = var.tsl_certificate_arn
+  alb_tls_cert_arn    = aws_acm_certificate.certificate.arn
   health_check_path   = var.health_check_path
 }
 

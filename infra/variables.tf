@@ -59,11 +59,6 @@ variable "health_check_path" {
   default     = "/"
 }
 
-variable "tsl_certificate_arn" {
-  description = "The ARN of the certificate that the ALB uses for https"
-  default     = "arn:aws:acm:region:account:certificate/certificate_ID"
-}
-
 # Use the only one certificate if the region of application deployment is us-east-1. Because Cloudfront only accepts certificates 
 # at us-east-1
 variable "tsl_certificatecloudfront" {
