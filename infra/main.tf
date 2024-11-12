@@ -31,47 +31,6 @@ module "ecr" {
   name        = var.name
   environment = var.environment
 }
-
-module "ecs" {
-  source                      = "./modules/ecs"
-  name                        = var.name
-  environment                 = var.environment
-  region                      = var.region
-  subnets                     = module.vpc.private_subnets
-  aws_alb_target_group_arn    = module.alb.aws_alb_target_group_arn
-  ecs_service_security_groups = [module.security_groups.ecs_tasks, module.security_groups.db_access_sg]
-  container_port              = var.container_port
-  container_cpu               = var.container_cpu
-  container_memory            = var.container_memory
-  service_desired_count       = var.service_desired_count
-  container_environment = [
-    { name  = "AWS_BUCKET_NAME",
-      value = var.app_bucket
-    },
-    { name  = "AWS_CLOUD_WATCH_STREAM",
-      value = var.app_bucket
-    },
-    {
-      name  = "AWS_REGION",
-      value = var.region
-    },
-    {
-      name  = "DATABASE_URL",
-      value = module.postgres-rds.hostname
-    },
-    {
-      name  = "DATABASE_NAME",
-      value = module.postgres-rds.database-name
-    }
-  ]
-  container_secrets      = var.secrets_values
-  aws_ecr_repository_url = module.ecr.aws_ecr_repository_url
-  container_secrets_arns = concat(var.secrets_arn, [var.database_secret_arn])
-  depends_on = [
-    module.postgres-rds
-  ]
-}
-
 module "postgres-rds" {
   source              = "./modules/rds"
   name                = var.name
